@@ -397,17 +397,7 @@
 
           <div>
             <label class="label">Categoria</label>
-            <select id="category">
-              <option value="🛒 Mercado">🛒 Mercado</option>
-              <option value="🍽️ Alimentação">🍽️ Alimentação</option>
-              <option value="🚌 Transporte">🚌 Transporte</option>
-              <option value="💊 Farmácia">💊 Farmácia</option>
-              <option value="💡 Energia">💡 Energia</option>
-              <option value="🚰 Água">🚰 Água</option>
-              <option value="🌐 Internet">🌐 Internet</option>
-              <option value="🎉 Lazer">🎉 Lazer</option>
-              <option value="🎬 Entretenimento">🎬 Entretenimento</option>
-            </select>
+            <select id="category"></select>
           </div>
 
           <div>
@@ -459,6 +449,32 @@
         currency: 'BRL'
       }).format(value || 0);
 
+    const expenseCategories = [
+      '🛒 Mercado',
+      '🍽️ Alimentação',
+      '🚌 Transporte',
+      '💊 Farmácia',
+      '💡 Energia',
+      '🚰 Água',
+      '🌐 Internet',
+      '🎉 Lazer',
+      '🎬 Entretenimento',
+      '🏠 Moradia',
+      '📚 Educação',
+      '💳 Cartão'
+    ];
+
+    const incomeCategories = [
+      '💼 Salário',
+      '💳 Crédito recebido',
+      '💸 Renda extra',
+      '🧑‍💻 Freelance',
+      '🎁 Presente',
+      '🔁 Reembolso',
+      '📈 Investimentos',
+      '🏦 Transferência recebida'
+    ];
+
     let transactions = JSON.parse(localStorage.getItem('finance_transactions')) || [
       { id: 1, type: 'receita', category: '💼 Salário', description: 'Salário mensal', paymentType: 'Transferência', amount: 3500, date: '2026-03-05' },
       { id: 2, type: 'despesa', category: '🏠 Moradia', description: 'Aluguel', paymentType: 'Pix', amount: 1200, date: '2026-03-06' },
@@ -487,6 +503,16 @@
       if (score < 35) return { label: 'Baixo', className: 'risk-low' };
       if (score < 70) return { label: 'Médio', className: 'risk-medium' };
       return { label: 'Alto', className: 'risk-high' };
+    }
+
+    function updateCategoryOptions() {
+      const type = document.getElementById('type').value;
+      const categorySelect = document.getElementById('category');
+      const categories = type === 'receita' ? incomeCategories : expenseCategories;
+
+      categorySelect.innerHTML = categories
+        .map(category => `<option value="${category}">${category}</option>`)
+        .join('');
     }
 
     function renderCharts(categoryData) {
@@ -689,7 +715,8 @@
         date
       });
 
-      document.getElementById('category').value = '🛒 Mercado';
+      document.getElementById('type').value = 'despesa';
+      updateCategoryOptions();
       document.getElementById('description').value = '';
       document.getElementById('paymentType').value = 'Pix';
       document.getElementById('amount').value = '';
@@ -735,6 +762,7 @@
 
     window.removeTransaction = removeTransaction;
 
+    document.getElementById('type').addEventListener('change', updateCategoryOptions);
     document.getElementById('addBtn').addEventListener('click', addTransaction);
     document.getElementById('reserveTarget').addEventListener('input', updateDashboard);
     document.getElementById('salaryDay').addEventListener('input', updateDashboard);
@@ -742,6 +770,7 @@
     document.getElementById('exportBtn').addEventListener('click', exportToCSV);
     document.getElementById('clearBtn').addEventListener('click', clearAllTransactions);
 
+    updateCategoryOptions();
     updateDashboard();
   </script>
 </body>
