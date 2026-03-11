@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giovana Baby, vamos poupar</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #fff7fb 0%, #fdf2f8 35%, #f4f7fb 100%);
+      color: #1f2937;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #ffffff 0%, #fff1f7 100%);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 1px solid #fbcfe8;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #6b7280;
+    }
+
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.96);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.07);
+      border: 1px solid #f1f5f9;
+      backdrop-filter: blur(8px);
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .top-actions {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    .mini-label {
+      display: block;
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 6px;
+    }
+
+    .soft-btn {
+      background: #fff;
+      color: #be185d;
+      border: 1px solid #f9a8d4;
+      box-shadow: none;
+    }
+
+    .soft-btn:hover {
+      background: #fff5f9;
+      opacity: 1;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #fff1f7;
+      color: #9d174d;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .metric-title {
+      color: #6b7280;
+      font-size: 0.95rem;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      background: #ffffff;
+      color: #1f2937;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 14px;
+      border: none;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+      box-shadow: 0 8px 18px rgba(219,39,119,0.25);
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .summary-boxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .small-box {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .small-box p:first-child {
+      color: #6b7280;
+      font-size: 0.92rem;
+    }
+
+    .small-box p:last-child {
+      margin-top: 8px;
+      font-size: 1.35rem;
+      font-weight: bold;
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .risk-low {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .risk-medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .risk-high {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .insight {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    .transaction-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .transaction-meta {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .income {
+      color: #059669;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .expense {
+      color: #dc2626;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .delete-btn {
+      width: auto;
+      padding: 8px 12px;
+      background: #ef4444;
+      font-size: 0.9rem;
+      box-shadow: none;
+    }
+
+    .progress-wrap {
+      width: 100%;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #f472b6 0%, #db2777 100%);
+      width: 0;
+      transition: width 0.3s ease;
+    }
+
+    canvas {
+      max-height: 320px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-3,
+      .grid-bottom,
+      .top-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1>Giovana Baby, vamos poupar</h1>
+        <p>Controle financeiro pessoal com dashboard, metas, projeção financeira e análise de risco para evitar ficar sem dinheiro.</p>
+      </div>
+
+      <div class="settings">
+        <div style="grid-column:1 / -1; background:#fff; border:1px solid #fbcfe8; color:#9d174d; padding:12px 14px; border-radius:16px; font-weight:bold;">
+          Análise pessoal pra sobrar pro Sushi
+        </div>
+
+        <div>
+          <label class="label">Dia do salário</label>
+          <input type="number" id="salaryDay" min="1" max="31" value="5" />
+        </div>
+
+        <div>
+          <label class="label">Meta de reserva</label>
+          <input type="number" id="reserveTarget" value="6000" />
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="top-actions">
+        <div>
+          <label class="mini-label">Filtrar por mês</label>
+          <input type="month" id="monthFilter" />
+        </div>
+        <button id="exportBtn" class="soft-btn">Exportar Excel (.csv)</button>
+        <button id="clearBtn" class="soft-btn">Limpar tudo</button>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <div class="metric-title">Receitas</div>
+        <div class="metric-value" id="receitaTotal">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Despesas</div>
+        <div class="metric-value" id="despesaTotal">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Saldo Atual</div>
+        <div class="metric-value" id="saldoAtual">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Queima diária</div>
+        <div class="metric-value" id="queimaDiaria">R$ 0,00</div>
+      </div>
+
+      <div class="card">
+        <div class="metric-title">Saldo do mês</div>
+        <div class="metric-value" id="saldoMes">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Resumo financeiro</h2>
+
+        <div class="summary-boxes">
+          <div class="small-box">
+            <p>Projeção no fim do mês</p>
+            <p id="projecaoFimMes">R$ 0,00</p>
+          </div>
+
+          <div class="small-box">
+            <p>Reserva construída</p>
+            <p id="reservaConstruida">R$ 0,00</p>
+            <div class="progress-wrap">
+              <div class="progress-bar" id="reserveProgress"></div>
+            </div>
+          </div>
+
+          <div class="small-box">
+            <p>Nível de risco</p>
+            <span id="riskBadge" class="risk-badge risk-low">Baixo</span>
+            <p id="riskScore">0%</p>
+          </div>
+        </div>
+
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Análise de risco</h2>
+        <div style="background:#f8fafc; border-radius:14px; padding:14px; color:#4b5563; margin-bottom:10px;">
+          O cálculo considera saldo atual, ritmo de gastos e percentual da renda comprometido.
+        </div>
+        <div id="insights"></div>
+      </div>
+    </div>
+
+    <div class="grid-bottom">
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Novo lançamento</h2>
+
+        <div style="display:grid; gap:12px;">
+          <div>
+            <label class="label">Tipo</label>
+            <select id="type">
+              <option value="despesa">Despesa</option>
+              <option value="receita">Receita</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label">Categoria</label>
+            <select id="category">
+              <option value="🛒 Mercado">🛒 Mercado</option>
+              <option value="🍽️ Alimentação">🍽️ Alimentação</option>
+              <option value="🚌 Transporte">🚌 Transporte</option>
+              <option value="💊 Farmácia">💊 Farmácia</option>
+              <option value="💡 Energia">💡 Energia</option>
+              <option value="🚰 Água">🚰 Água</option>
+              <option value="🌐 Internet">🌐 Internet</option>
+              <option value="🎉 Lazer">🎉 Lazer</option>
+              <option value="🎬 Entretenimento">🎬 Entretenimento</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label">Descrição</label>
+            <input type="text" id="description" placeholder="Ex.: Conta de luz" />
+          </div>
+
+          <div>
+            <label class="label">Tipo de pagamento</label>
+            <select id="paymentType">
+              <option value="Pix">Pix</option>
+              <option value="Débito">Débito</option>
+              <option value="Crédito">Crédito</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Transferência">Transferência</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="label">Valor</label>
+            <input type="number" id="amount" placeholder="0.00" />
+          </div>
+
+          <div>
+            <label class="label">Data</label>
+            <input type="date" id="date" />
+          </div>
+
+          <button id="addBtn">Adicionar lançamento</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Despesas por categoria</h2>
+        <canvas id="pieChart"></canvas>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Últimos lançamentos</h2>
+        <div id="transactionsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const currency = (value) =>
+      new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(value || 0);
+
+    let transactions = JSON.parse(localStorage.getItem('finance_transactions')) || [
+      { id: 1, type: 'receita', category: '💼 Salário', description: 'Salário mensal', paymentType: 'Transferência', amount: 3500, date: '2026-03-05' },
+      { id: 2, type: 'despesa', category: '🏠 Moradia', description: 'Aluguel', paymentType: 'Pix', amount: 1200, date: '2026-03-06' },
+      { id: 3, type: 'despesa', category: '🛒 Mercado', description: 'Supermercado', paymentType: 'Débito', amount: 550, date: '2026-03-07' },
+      { id: 4, type: 'despesa', category: '🚌 Transporte', description: 'Combustível', paymentType: 'Crédito', amount: 320, date: '2026-03-08' },
+      { id: 5, type: 'despesa', category: '🎉 Lazer', description: 'Cinema e jantar', paymentType: 'Pix', amount: 180, date: '2026-03-09' }
+    ];
+
+    const monthlySeries = [
+      { month: 'Jan', receita: 3200, despesa: 2800 },
+      { month: 'Fev', receita: 3500, despesa: 3000 },
+      { month: 'Mar', receita: 3500, despesa: 2250 }
+    ];
+
+    document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('monthFilter').value = new Date().toISOString().slice(0, 7);
+
+    let pieChart;
+    let barChart;
+
+    function saveTransactions() {
+      localStorage.setItem('finance_transactions', JSON.stringify(transactions));
+    }
+
+    function riskLabel(score) {
+      if (score < 35) return { label: 'Baixo', className: 'risk-low' };
+      if (score < 70) return { label: 'Médio', className: 'risk-medium' };
+      return { label: 'Alto', className: 'risk-high' };
+    }
+
+    function renderCharts(categoryData) {
+      const pieCtx = document.getElementById('pieChart');
+      const barCtx = document.getElementById('barChart');
+
+      if (pieChart) pieChart.destroy();
+      if (barChart) barChart.destroy();
+
+      pieChart = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+          labels: categoryData.map(item => item.name),
+          datasets: [
+            {
+              data: categoryData.map(item => item.value)
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${currency(ctx.raw)}`
+              }
+            }
+          }
+        }
+      });
+
+      barChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: monthlySeries.map(item => item.month),
+          datasets: [
+            { label: 'Receita', data: monthlySeries.map(item => item.receita) },
+            { label: 'Despesa', data: monthlySeries.map(item => item.despesa) }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${currency(ctx.raw)}`
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function getFilteredTransactions() {
+      const monthFilter = document.getElementById('monthFilter').value;
+      if (!monthFilter) return transactions;
+      return transactions.filter(item => (item.date || '').slice(0, 7) === monthFilter);
+    }
+
+    function renderTransactions() {
+      const list = document.getElementById('transactionsList');
+      list.innerHTML = '';
+
+      const filteredTransactions = getFilteredTransactions();
+
+      filteredTransactions
+        .slice()
+        .reverse()
+        .slice(0, 8)
+        .forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'transaction-item';
+          div.innerHTML = `
+            <div>
+              <strong>${item.description}</strong>
+              <div class="transaction-meta">${item.category} • ${item.date}</div>
+              <div class="transaction-meta">Pagamento: ${item.paymentType || '—'}</div>
+              <div class="${item.type === 'receita' ? 'income' : 'expense'}">
+                ${item.type === 'receita' ? '+' : '-'} ${currency(item.amount)}
+              </div>
+              <span class="pill">${item.type === 'receita' ? 'Receita' : 'Despesa'}</span>
+            </div>
+            <button class="delete-btn" onclick="removeTransaction(${item.id})">Excluir</button>
+          `;
+          list.appendChild(div);
+        });
+
+      if (!filteredTransactions.length) {
+        list.innerHTML = '<div class="insight">Nenhum lançamento encontrado para o mês selecionado.</div>';
+      }
+    }
+
+    function renderInsights(totals, categoryData) {
+      const insights = [];
+
+      if (totals.projectedEndMonth < 0) {
+        insights.push('Pelo ritmo atual, você pode terminar o mês no negativo.');
+      }
+
+      if (totals.despesa > totals.receita * 0.8) {
+        insights.push('Suas despesas estão consumindo mais de 80% da sua renda.');
+      }
+
+      if (totals.saldo > 0 && totals.saldo < totals.despesa * 0.5) {
+        insights.push('Seu saldo atual está apertado em relação ao volume das despesas.');
+      }
+
+      if (categoryData.length > 0) {
+        const highest = [...categoryData].sort((a, b) => b.value - a.value)[0];
+        if (highest) {
+          insights.push(`A categoria com maior peso hoje é ${highest.name}.`);
+        }
+      }
+
+      if (insights.length === 0) {
+        insights.push('Seu cenário atual parece equilibrado, mas continue acompanhando semanalmente.');
+      }
+
+      insights.push('Sugestão automática: tente manter uma reserva mínima de pelo menos 1 a 2 meses das suas despesas médias.');
+
+      const wrap = document.getElementById('insights');
+      wrap.innerHTML = insights.map(text => `<div class="insight">${text}</div>`).join('');
+    }
+
+    function updateDashboard() {
+      const reserveTarget = Number(document.getElementById('reserveTarget').value) || 6000;
+      const filteredTransactions = getFilteredTransactions();
+
+      const receita = filteredTransactions
+        .filter(t => t.type === 'receita')
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const despesa = filteredTransactions
+        .filter(t => t.type === 'despesa')
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const saldo = receita - despesa;
+      const dayOfMonth = new Date().getDate();
+      const dailyBurn = despesa / Math.max(dayOfMonth, 1);
+      const projectedEndMonth = receita - (dailyBurn * 30);
+      const reserveProgress = Math.max(0, Math.min(100, (Math.max(saldo, 0) / reserveTarget) * 100));
+
+      const fixedExpenseRatio = receita > 0 ? (despesa / receita) * 100 : 0;
+      const lowBalancePenalty = saldo <= 0 ? 55 : saldo < despesa * 0.35 ? 35 : saldo < despesa * 0.6 ? 20 : 5;
+      const burnPenalty = projectedEndMonth < 0 ? 30 : projectedEndMonth < receita * 0.15 ? 18 : 8;
+      const ratioPenalty = fixedExpenseRatio > 95 ? 30 : fixedExpenseRatio > 80 ? 22 : fixedExpenseRatio > 65 ? 12 : 5;
+      const riskScore = Math.min(100, Math.round(lowBalancePenalty + burnPenalty + ratioPenalty));
+      const risk = riskLabel(riskScore);
+
+      const expensesByCategory = {};
+      filteredTransactions
+        .filter(t => t.type === 'despesa')
+        .forEach(item => {
+          expensesByCategory[item.category] = (expensesByCategory[item.category] || 0) + item.amount;
+        });
+
+      const categoryData = Object.entries(expensesByCategory).map(([name, value]) => ({ name, value }));
+
+      document.getElementById('receitaTotal').textContent = currency(receita);
+      document.getElementById('despesaTotal').textContent = currency(despesa);
+      document.getElementById('saldoAtual').textContent = currency(saldo);
+      document.getElementById('queimaDiaria').textContent = currency(dailyBurn);
+      document.getElementById('saldoMes').textContent = currency(saldo);
+      document.getElementById('projecaoFimMes').textContent = currency(projectedEndMonth);
+      document.getElementById('reservaConstruida').textContent = currency(Math.max(saldo, 0));
+      document.getElementById('reserveProgress').style.width = reserveProgress + '%';
+      document.getElementById('riskScore').textContent = riskScore + '%';
+
+      const badge = document.getElementById('riskBadge');
+      badge.textContent = risk.label;
+      badge.className = 'risk-badge ' + risk.className;
+
+      renderInsights({ receita, despesa, saldo, projectedEndMonth }, categoryData);
+      renderTransactions();
+      renderCharts(categoryData);
+      saveTransactions();
+    }
+
+    function addTransaction() {
+      const type = document.getElementById('type').value;
+      const category = document.getElementById('category').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const paymentType = document.getElementById('paymentType').value;
+      const amount = Number(document.getElementById('amount').value);
+      const date = document.getElementById('date').value;
+
+      if (!category || !description || !amount || amount <= 0 || !date) {
+        alert('Preencha todos os campos corretamente.');
+        return;
+      }
+
+      transactions.push({
+        id: Date.now(),
+        type,
+        category,
+        description,
+        paymentType,
+        amount,
+        date
+      });
+
+      document.getElementById('category').value = '🛒 Mercado';
+      document.getElementById('description').value = '';
+      document.getElementById('paymentType').value = 'Pix';
+      document.getElementById('amount').value = '';
+
+      updateDashboard();
+    }
+
+    function removeTransaction(id) {
+      transactions = transactions.filter(item => item.id !== id);
+      updateDashboard();
+    }
+
+    function exportToCSV() {
+      const rows = [['Tipo', 'Categoria', 'Descrição', 'Pagamento', 'Valor', 'Data']];
+
+      transactions.forEach(item => {
+        rows.push([
+          item.type,
+          item.category,
+          item.description,
+          item.paymentType || '',
+          item.amount,
+          item.date
+        ]);
+      });
+
+      const csv = rows
+        .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';'))
+        .join('\n');
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'giovana-baby-vamos-poupar.csv';
+      link.click();
+    }
+
+    function clearAllTransactions() {
+      if (!confirm('Tem certeza que deseja apagar todos os lançamentos?')) return;
+      transactions = [];
+      updateDashboard();
+    }
+
+    window.removeTransaction = removeTransaction;
+
+    document.getElementById('addBtn').addEventListener('click', addTransaction);
+    document.getElementById('reserveTarget').addEventListener('input', updateDashboard);
+    document.getElementById('salaryDay').addEventListener('input', updateDashboard);
+    document.getElementById('monthFilter').addEventListener('input', updateDashboard);
+    document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+    document.getElementById('clearBtn').addEventListener('click', clearAllTransactions);
+
+    updateDashboard();
+  </script>
+</body>
+</html>
